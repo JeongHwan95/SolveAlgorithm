@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,82 +5,98 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Main {
+	
+	static StringBuffer sb = new StringBuffer();
+	static boolean[] arrayForChecking;
+	static boolean[][] graph;
 	static int N;
 	static int M;
 	static int V;
 	
-	static int [][]graph;
-	static StringBuffer sb;
-	
-	static boolean []visited;
-	
 	public static void main(String[] args) throws IOException {
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		sb = new StringBuffer();
-
-		String input = br.readLine();
-		String []inputArr = input.split(" ");
+		
+		String line = br.readLine();
+		String[] information = line.split(" ");
+		
+		N = Integer.parseInt(information[0]);
+		M = Integer.parseInt(information[1]);
+		V = Integer.parseInt(information[2]);
 		
 		
-		// 정점 갯수
-		N = Integer.parseInt(inputArr[0]);
-		// 간선 갯수
-		M = Integer.parseInt(inputArr[1]);
-		// 탐색을 시작할 정점
-		V = Integer.parseInt(inputArr[2]);
+		// Create a dataStructure for receving graph 
+		graph = new boolean[N+1][N+1];
 		
 		
-		graph = new int[N+1][N+1];
-		for(int i = 0; i < M; i++) {
-			String s = br.readLine();
-			String arrS[] = s.split(" ");
-			int x = Integer.parseInt(arrS[0]);
-			int y = Integer.parseInt(arrS[1]);
+		// Store values of a graph into a dataStructure
+		for(int i=1; i<M+1; i++) {
+			line = br.readLine();
+			String[] xy = line.split(" ");
 			
-			graph[x][y] = graph[y][x] = 1;
-		}//for
-	
+			int x = Integer.parseInt(xy[0]);
+			int y = Integer.parseInt(xy[1]);
+			
+			graph[x][y] = graph[y][x] = true;
+		} // for
 		
-		visited = new boolean[N+1];
-		dfs(V);
+		
+		// This block exist for DFS
+		{
+			// Create an array for checking Whether to be through vertex or not
+			arrayForChecking = new boolean[N+1];
+					
+			// Execute DFS and print it
+			Main.dfs(V);
+			System.out.println(sb.toString());
+		}
+		
+		// This block exist for BFS
+		{
+			// Initialize StringBuffer and array for checking
+			sb = new StringBuffer();
+			arrayForChecking = new boolean[N+1];
+			
+			Main.bfs(V);
+			System.out.println(sb.toString());
+		}
+	} // main
 
-		sb.append("\n");
+	
+	
+	public static void dfs(int start) {
 		
-		visited = new boolean[N+1];
-		bfs(V);
+		sb.append(start + " ");
+		arrayForChecking[start] = true;
+		
+		for(int i=1; i<N+1; i++) {
+			if(arrayForChecking[i]==false && graph[i][start]==true) {
 
-		System.out.println(sb.toString());
-	}//main
-	
-	
-	public static void dfs(int V) {
-		visited[V] = true;
-		sb.append(V+" ");
-		
-		for(int i = 1; i <= N; i++) {
-			if(graph[i][V]==1 && visited[i]==false) {
 				dfs(i);
-			}//if
-		}//for
-	}//dfs(int V)
+			} // if
+		} // for
+	} // dfs()
 	
-	
-	public static void bfs(int V) {
-		Queue<Integer> queue = new LinkedList<>();
-		visited[V] = true;
-		queue.add(V);
+	public static void bfs(int start) {
+		
+		Queue<Integer> queue = new LinkedList<Integer>();
+		queue.add(start);
+		arrayForChecking[start] = true;
+		sb.append(start+" ");
 		
 		
-		while(!queue.isEmpty()) {
-			int queueV = queue.poll();
-			sb.append(queueV+" ");	
 			
-			for(int i=1; i<= N; i++) {
-				if(visited[i] == false && graph[i][queueV]==1) {
+		while(!queue.isEmpty()) {
+			int currentVertex = queue.poll();
+			
+			for(int i=1; i<N+1; i++) {
+				
+				if(graph[currentVertex][i]==true && arrayForChecking[i]==false) {
 					queue.add(i);
-					visited[i] = true;
-				}//if
-			}//for
-		}//while
-	}//bfs(int V)
-}//class
+					arrayForChecking[i] = true;
+					sb.append(i+" ");
+				} // if
+			} // for
+		} // while	
+	}// bfs
+} // end class
