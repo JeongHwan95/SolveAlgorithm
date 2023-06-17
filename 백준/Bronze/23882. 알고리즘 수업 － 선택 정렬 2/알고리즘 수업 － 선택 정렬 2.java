@@ -29,7 +29,6 @@ public class Main {
 			} // for
 		}
 		
-		
 		// Do Selection Sort and check the number of exchange
 		{
 			count = 0;
@@ -65,7 +64,7 @@ public class Main {
 			} // for
 		}
 
-		// Print an answer considered by condition
+		// Print an answer considered with condition
 		{
 			if(count<K) {
 				System.out.println("-1");
