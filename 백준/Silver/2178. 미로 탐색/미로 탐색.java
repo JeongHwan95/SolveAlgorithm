@@ -1,109 +1,97 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.StringTokenizer;
 
-//Complete
+// 2178번
 public class Main {
 	
-	static int graph[][];
-	static int row;
-	static int column;
-	static int[] dx = { -1, 0, 1, 0};
-	static int[] dy = { 0, -1, 0, 1};
-	static int answerForDfs = 0;
-	static boolean arrForDfs[][];
+	static class Position{
+		
+		int x, y, answer;
+		
+		Position(int x, int y, int answer){
+			this.x = x;
+			this.y = y;
+			this.answer = answer;
+		}
+	} // Position
 	
+	static int N;
+	static int M;
+	static int dx[] = {-1, 0, 1, 0};
+	static int dy[] = {0, -1, 0, 1};
+	static int map[][];
+	static boolean visited[][];
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException{
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		// Process first row from user
-		String line = br.readLine();
-		String[] rowAndColumn = line.split(" ");
-		row = Integer.parseInt(rowAndColumn[0]);
-		column = Integer.parseInt(rowAndColumn[1]);
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		map = new int[N][M];
+		visited = new boolean[N][M];
 		
 		
-		// Store an array into dataStructure
-		graph = new int[row][column];
-		
-		for(int i=0; i<row; i++) {
+		for(int i=0; i<N; i++) {
 			
-			line = br.readLine();
-			
-			for(int j=0; j<column; j++) {
-				if(line.charAt(j) == '1') {
-					graph[i][j] = 1;
-				}
-				else {
-					graph[i][j] = 0;
-				} // if - else
+			String s = br.readLine();
+			for(int j=0; j<M; j++) {
+				map[i][j] = s.charAt(j)-'0';
 			} // for
 		} // for
 		
-		/*
-		// Get an answer by BFS and print it
+		
 		int answer = bfs();
+		
 		System.out.println(answer);
-		*/
-		
-		// Get an answer by DFS and print it
-		bfs();
-		
-		System.out.println(graph[row-1][column-1]);
-		
-		br.close();
-		
 	} // main
 	
-	
-	public static void bfs() {
+	public  static int bfs() {
 		
-		// Create everthing to be need
-		Integer[] arrForQueue;
-		boolean[][] arrForChecking = new boolean[row][column];
-		Queue<Integer[]> queue = new LinkedList<>();
-		arrForQueue = new Integer[] {0, 0};
-		queue.add(arrForQueue);
-		arrForChecking[0][0] = true;
+		Queue<Position> queue = new ArrayDeque<>();
+		visited[0][0] = true;
+		queue.add(new Position(0, 0, 1));
 		
-		
-		// Circulate an graph
 		while(!queue.isEmpty()) {
 			
-			arrForQueue = queue.poll();
-			int x = arrForQueue[0];
-			int y = arrForQueue[1];
+			Position p = queue.poll();
+			int x = p.x;
+			int y = p.y;
+			int answer = p.answer;
 			
-			for(int i=0; i<dx.length; i++) {
+//			System.out.println("x, y : " + x + ", " + y);
+			
+			if(x == N-1 && y == M-1) {
+				return answer;
+			}
+			
+			for(int i=0; i<4; i++) {
+//				System.out.println("answer : " + answer);
 				
 				int nextX = x + dx[i];
 				int nextY = y + dy[i];
 				
-//				System.out.println("nextX: " + nextX);
-//				System.out.println("nextY: " + nextY);
+//				System.out.println("nextX, nextY : " + nextX + " " + nextY);
+				
+				if(nextX < 0 || nextY < 0 || nextX >= N || nextY >= M )
+					continue;
 				
 				
-				// Check Whether x and y get out from range of the graph
-				if( nextX >= 0 && nextX < row && nextY >= 0 && nextY < column ) {
+				if(!visited[nextX][nextY] && map[nextX][nextY]==1) {
 					
-					// check
-					// 1. Whether the point already get searched or not
-					// 2. The point have a value of 1
-					if(arrForChecking[nextX][nextY]==false 
-							&& graph[nextX][nextY] >= 1) {
-						
-						arrForChecking[nextX][nextY] = true;
-						graph[nextX][nextY] = graph[x][y] + 1;
-						arrForQueue = new Integer[] { nextX, nextY }; 
-						queue.add(arrForQueue);
-					} // if
+//					System.out.println("Check here");
+					visited[nextX][nextY] = true;
+					queue.add(new Position(nextX, nextY, answer+1));
+					
 				} // if
-			} // for circulating dx, dy
+			} // for
 		} // while
-	} // bfs()	
+		return 0;
+	} // bfs
+	
 } // end class
-
