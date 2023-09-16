@@ -25,7 +25,6 @@ public class Main {
 		int b = A;
 		do {
 			
-			
 			int sum = 0;
 			while(b%10!=0 || b>9) {
 				sum += Math.pow(b%10, P);
@@ -35,10 +34,12 @@ public class Main {
 			
 			b = sum;
 			
+			// 답을 찾았을 때
 			if(checking[b]!=0) {
 				index = checking[b];
 				break;
 			}
+			// 그 외의 경우
 			else{
 				checking[b] = ++index;
 				count++;
