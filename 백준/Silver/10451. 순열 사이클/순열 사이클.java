@@ -1,72 +1,43 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Scanner;
 
+//10451
+//1, 2, 3, 4, 
 public class Main {
-	
-	static int[][] graph;
-	static boolean[] arrForChecking;
-	static int number;
+	static int[] map;
+	static boolean[] check;
+	static int cycle;
 	
 	public static void main(String[] args) throws IOException{
+		Scanner sc = new Scanner(System.in);
 		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuffer sb = new StringBuffer();
-		
-		
-		// Receive testCase
-		String testCase = br.readLine();
-		int t = Integer.parseInt(testCase);
-		
-		for(int i=0; i<t; i++) {
+		int t = sc.nextInt();
+		for(int test=0; test<t; test++) {
+			int n = sc.nextInt();
+			cycle = 0;
 			
-			// Receive the number of vertexes
-			String numberOfElements = br.readLine();
-			number = Integer.parseInt(numberOfElements);
+			map = new int[n+1];
+			for(int i=1; i<n+1; i++) {
+				map[i] = sc.nextInt();
+			}
 			
-			// Receive vertexes
-			String arrOfElement = br.readLine();
-			String[] element = arrOfElement.split(" ");
-			
-			// Store values into graph[][] with element[]
-			// directional : graph[x][y] : x => y
-			Main.graph = new int[number+1][number+1];
-			for(int j=0; j<number; j++) {
-				
-				int e = Integer.parseInt(element[j]);
-				
-				Main.graph[j+1][e] = 1;
-			} // for
-			
-			
-			int answer = 0;
-			Main.arrForChecking = new boolean[number+1];
-			
-			for(int j=1; j<number+1; j++) {
-				if(Main.arrForChecking[j] == false) {
-					answer++;
-					dfs(j);
-				} //if
-			} // for
-			sb.append(answer+"\n");
-		} // for
-		
-		System.out.println(sb.toString());
-	} // main
-	
+			check = new boolean[n+1];
+			for(int i=1; i<n+1; i++) {
+				while(!check[i]) {
+					dfs(i);
+					cycle++;
+				}
+			}
+			System.out.println(cycle);
+		}
+	}
 	
 	public static void dfs(int start) {
+		check[start] = true;
 		
-		arrForChecking[start] = true;
-		
-		
-		// Check
-		// 1. Whether the vertex gets searched or not
-		// 2. Whether the edge exists between vertexes
-		for(int i=1; i<number+1; i++) {
-			if(graph[start][i] == 1 && Main.arrForChecking[i]==false) {
-				dfs(i);
-			}//if
-		} // for
-	} // dfs
-} // end class
+		int next = map[start];
+		while(!check[next]) {
+			dfs(next);
+		}
+	}
+}
