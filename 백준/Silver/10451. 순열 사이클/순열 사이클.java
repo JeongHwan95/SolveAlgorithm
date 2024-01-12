@@ -1,43 +1,57 @@
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-//10451
-//1, 2, 3, 4, 
-public class Main {
-	static int[] map;
-	static boolean[] check;
-	static int cycle;
+//2178번
+public class Main{
+	
+	static int count;
+	static int N;
+	static int[][] map;
+	static boolean[] visited;
+	static boolean flag;
 	
 	public static void main(String[] args) throws IOException{
-		Scanner sc = new Scanner(System.in);
 		
-		int t = sc.nextInt();
-		for(int test=0; test<t; test++) {
-			int n = sc.nextInt();
-			cycle = 0;
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int T = Integer.parseInt(br.readLine());
+		
+		for(int i=0; i<T; i++) {
 			
-			map = new int[n+1];
-			for(int i=1; i<n+1; i++) {
-				map[i] = sc.nextInt();
+			N = Integer.parseInt(br.readLine());
+			map = new int[N+1][N+1];
+			StringTokenizer st = new StringTokenizer( br.readLine());
+			for(int j=1; j<map.length; j++) {
+				map[j][Integer.parseInt(st.nextToken())] = 1;
 			}
 			
-			check = new boolean[n+1];
-			for(int i=1; i<n+1; i++) {
-				while(!check[i]) {
-					dfs(i);
-					cycle++;
-				}
-			}
-			System.out.println(cycle);
-		}
+			count = 0;
+			visited = new boolean[N+1];
+			for(int j=1; j<map.length; j++) {
+				flag = false;
+				dfs(j);
+				
+				if(flag)
+					count++;
+			} // for
+			
+			System.out.println(count);
+		} // testcase For문
 	}
 	
-	public static void dfs(int start) {
-		check[start] = true;
+	public static void dfs(int v) {
+		if(!visited[v]) {
+			flag = true;
+			visited[v] = true;
+		}else {
+			return;
+		}
 		
-		int next = map[start];
-		while(!check[next]) {
-			dfs(next);
+		for(int i=1; i<=N; i++) {
+			if(!visited[i] && map[v][i] == 1) {
+				dfs(i);
+			}
 		}
 	}
-}
+} // end class
