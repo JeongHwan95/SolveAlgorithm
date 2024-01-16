@@ -43,7 +43,8 @@ public class Main{
 				for(int j=0; j<N; j++) {
 					flag = false;
 					
-					bfs(i, j, rain);
+//					bfs(i, j, rain);
+					dfs(i, j, rain);
 					
 					if(flag) {
 						count++;
@@ -54,6 +55,31 @@ public class Main{
 		}
 		System.out.println(answer);
 	}
+	
+	public static void dfs(int x, int y, int rain) {
+		if(map[x][y]<rain || visited[x][y]) {
+			return;
+		}
+		
+		flag = true;
+		visited[x][y] = true;
+		
+		for(int i=0; i<4; i++) {
+			
+			int nextX = x + dx[i];
+			int nextY = y + dy[i];
+			
+			if(nextX<0 || nextY<0 || nextX>=N || nextY>=N) {
+				continue;
+			}
+			
+			if(!visited[nextX][nextY] && map[nextX][nextY]>=rain) {
+				dfs(nextX, nextY, rain);
+			}
+		}
+		
+	}
+	
 	
 	
 	public static void bfs(int x, int y, int rain) {
