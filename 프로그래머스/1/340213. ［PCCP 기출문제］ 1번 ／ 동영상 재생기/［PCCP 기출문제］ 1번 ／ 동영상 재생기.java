@@ -60,11 +60,7 @@ class Solution {
             }
         }
 
-        if(currentTime>=opStartTime && currentTime<= opEndTime){
-            currentTime = opEndTime;
-        }
-
-
+        
         int currentMinutes = currentTime/60;
         int currentSeconds = currentTime%60;
 
