@@ -1,53 +1,45 @@
-import java.util.Arrays;
-
+import java.util.*;
 
 class Solution {
-    public int solution(int[] mats, String[][] park) {
-        int answer = 0;
-        
-        // 오름차순 정렬
-        Arrays.sort(mats);
+    static String[][] park;
 
-        // 배열 뒤집기 (내림차순)
-        int left = 0, right = mats.length - 1;
-        while (left < right) {
-            int temp = mats[left];
-            mats[left] = mats[right];
-            mats[right] = temp;
-            left++;
-            right--;
+    // 돗자리가 (x, y)에서 시작하는 정사각형으로 깔릴 수 있는지 체크하는 함수
+    static boolean check(int x, int y, int size) {
+        int n = park.length;
+        int m = park[0].length;
+
+        // 돗자리가 공원의 경계를 넘는지 확인
+        if (x + size > n || y + size > m) return false;
+
+        // size x size 영역에 다른 사람이 있는지 확인
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (!"-1".equals(park[x + i][y + j])) {
+                    return false; // 사람이 있으면 false 반환
+                }
+            }
         }
+        return true; // 깔 수 있으면 true 반환
+    }
 
-        for(int k : mats){
+    public int solution(int[] mats, String[][] inputPark) {
+        park = inputPark; // 전역 변수에 공원 정보를 할당
+        Arrays.sort(mats); // 돗자리를 작은 것부터 큰 것 순으로 정렬
+        int maxMat = -1; // 깔 수 있는 가장 큰 돗자리 크기를 저장
 
-            for(int i=0; i<park.length; i++){
-
-                if(i+k-1 >= park.length) break;
-                for(int j=0; j<park[i].length; j++){
-
-                    if(j+k-1 >= park[i].length) break;
-                    boolean flag=false;
-                    for(int l = 0; l<k; l++){
-
-                        for(int m=0; m<k; m++) {
-
-                            if (!park[i + l][j + m].equals("-1")) {
-                                flag = true;
-                                break;
-                            }
+        // 공원의 모든 좌표에 대해 돗자리를 깔 수 있는지 확인
+        for (int i = 0; i < park.length; i++) {
+            for (int j = 0; j < park[0].length; j++) {
+                    // 각 돗자리 크기에 대해 확인
+                    for (int matSize : mats) {
+                        if (check(i, j, matSize)) {
+                            maxMat = Math.max(maxMat, matSize); // 가장 큰 돗자리 크기를 저장
                         }
-                        if(flag){
-                            break;
-                        }
-                    }
-                    if(!flag) {
-                        System.out.println("i : " + i + " j : " + j);
-                        return k;
-                    }
+                    
                 }
             }
         }
 
-        return -1;
+        return maxMat;
     }
 }
